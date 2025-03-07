@@ -18,13 +18,16 @@ export const createNewUser = mutation({
             .collect();
 
         if (!existingUser[0]?.email) {
-            const result = await ctx.db.insert("users", {
+            const userData =
+            {
                 name: args.name || "Anonymous", // ✅ Default name if missing
                 email: args.email,
                 pictureURL: args.pictureURL || "",
                 credits: 3 // ✅ Default credits
-            });
-            return result;
+            }
+
+            const result = await ctx.db.insert("users", userData);
+            return userData;
         }
         return existingUser[0];
     }

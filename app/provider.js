@@ -20,7 +20,7 @@ function Provider({ children }) {
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
             console.log("Authenticated user:", user);
-            setUser(user);
+            
 
             const result = await CreateUser({
                 name: user?.displayName,
@@ -28,6 +28,7 @@ function Provider({ children }) {
                 pictureURL: user?.photoURL
             });
             console.log("User created:", result);
+            setUser(result);
         })
 
         return () => unsubscribe();
@@ -37,7 +38,7 @@ function Provider({ children }) {
         <AuthContext.Provider value={{ user }}>
             <NextThemesProvider
                 attribute="class"
-                defaultTheme="dark"
+                defaultTheme="system"
                 enableSystem
                 disableTransitionOnChange
             >
