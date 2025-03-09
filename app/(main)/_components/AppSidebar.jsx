@@ -26,7 +26,7 @@ const MenuItems = [
     {
         title: "Create New Video",
         icon: LucideFileVideo,
-        link: "/create-new-video", // ✅ Fixed typo
+        link: "/create-new-video", 
     },
     {
         title: "Explore",
@@ -60,7 +60,9 @@ function AppSideBar() {
                 <SidebarContent>
                     <SidebarGroup />
                     <div className="mx-3 mt-5">
+                        <Link href={'/create-new-video'}>
                         <Button className="w-full">+ Create New Video</Button>
+                        </Link>
                     </div>
                     <SidebarMenu>
                         {MenuItems.map((menu, index) => (

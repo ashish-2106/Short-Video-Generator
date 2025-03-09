@@ -20,11 +20,11 @@ function Header() {
                         Get Started
                     </Button>
                 </Authentication>
-                    : <div className='flex items-center gap-3'> 
-                    <Link href={'/dashboard'}>
-                        <Button className="bg-white text-black">Dashboard</Button>
+                    : <div className='flex items-center gap-3'>
+                        <Link href={'/dashboard'}>
+                            <Button className="bg-white text-black">Dashboard</Button>
                         </Link>
-                        {user?.pictureURL && <Image src={user?.pictureURL} alt="user" width={40} height={40} className="rounded-full" />}
+                        {user?.photoURL && <Image src={user?.photoURL} alt="user" width={40} height={40} className="rounded-full" />}
                     </div>}
             </div>
         </div>
