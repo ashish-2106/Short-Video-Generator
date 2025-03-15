@@ -4,7 +4,8 @@ import React, { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { SparklesIcon } from "lucide-react";
+import { Loader2Icon, SparklesIcon } from "lucide-react";
+import axios from "axios";
 
 const suggestions = [
   "Historic Story",
@@ -22,11 +23,25 @@ const suggestions = [
 ];
 
 function Topic({ onHandelInputChange }) {
-  const [SelectTopic, SetSelectedTopic] = useState("");
+  const [selectedTopic, setSelectedTopic] = useState("");
+  const [scripts, setScripts] = useState();
+  const [loading, setLoading] = useState(false);
 
-  const GenerateScript = () => {
-    console.log("Generating script..."); // ✅ Placeholder for now
+  const GenerateScript = async () => {
+    setLoading(true);
+    try {
+      const result = await axios.post('/api/generate-script', {
+        topic: selectedTopic
+      });
+      console.log(result.data);
+      setScripts(result.data?.scripts);
+    }
+    catch (e) {
+      console.log(e);
+    }
+    setLoading(false);
   };
+
 
   return (
     <div>
@@ -50,9 +65,9 @@ function Topic({ onHandelInputChange }) {
                 <Button
                   variant="outline"
                   key={index}
-                  className={`m-1 ${suggestion === SelectTopic ? "bg-secondary" : ""}`}
+                  className={`m-1 ${suggestion === selectedTopic ? "bg-secondary" : ""}`}
                   onClick={() => {
-                    SetSelectedTopic(suggestion);
+                    setSelectedTopic(suggestion);
                     onHandelInputChange("Topic", suggestion);
                   }}
                 >
@@ -71,9 +86,22 @@ function Topic({ onHandelInputChange }) {
             </div>
           </TabsContent>
         </Tabs>
+        {scripts?.length > 0 && <div className="grid grid-cols-2 gap-5">
+          {scripts.slice(0, 2)?.map((item, index) => (
+            <div key={index} className="p-3 border rounded-lg mt-3">
+              <h2 className="font-bold text-gray-300">Scene:</h2>
+              <p className="line-clamp-4 text-sm text-gray-300">{item.scene}</p>
+              <h2 className="font-bold mt-2 text-gray-300">Visuals:</h2>
+              <p className="line-clamp-4 text-sm text-gray-300">{item.visual}</p>
+              <h2 className="font-bold mt-2 text-gray-300">Voiceover:</h2>
+              <p className="line-clamp-4 text-sm text-gray-300">{item.voiceover}</p>
+            </div>
+          ))}
+        </div>}
+
       </div>
-      <Button className="mt-3" size="sm" onClick={GenerateScript}>
-        <SparklesIcon className="mr-2" /> Generate Script
+      <Button className="mt-3" size="sm" disabled={loading} onClick={GenerateScript}>
+        {loading ? <Loader2Icon className="animate-spin" /> : <SparklesIcon className="mr-2" />}Generate Script
       </Button>
     </div>
   );

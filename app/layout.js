@@ -12,7 +12,7 @@ const outfit = Outfit({ subsets: ["latin"] });
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning="false">
       <body className={`${outfit.className} bg-background text-foreground`}>
         
         <ConvexClientProvider>
