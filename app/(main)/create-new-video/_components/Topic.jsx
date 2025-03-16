@@ -24,11 +24,13 @@ const suggestions = [
 
 function Topic({ onHandelInputChange }) {
   const [selectedTopic, setSelectedTopic] = useState("");
+  const [selectedScriptIndex, setSelectedScriptIndex] = useState()
   const [scripts, setScripts] = useState();
   const [loading, setLoading] = useState(false);
 
   const GenerateScript = async () => {
     setLoading(true);
+    setSelectedScriptIndex(null);
     try {
       const result = await axios.post('/api/generate-script', {
         topic: selectedTopic
@@ -88,7 +90,10 @@ function Topic({ onHandelInputChange }) {
         </Tabs>
         {scripts?.length > 0 && <div className="grid grid-cols-2 gap-5">
           {scripts.slice(0, 2)?.map((item, index) => (
-            <div key={index} className="p-3 border rounded-lg mt-3">
+            <div key={index} className={`p-3 border rounded-lg mt-3 cursor-pointer 
+            ${selectedScriptIndex == index && 'border-white bg-secondary'}`}
+              onClick={() => setSelectedScriptIndex(index)}
+            >
               <h2 className="font-bold text-gray-300">Scene:</h2>
               <p className="line-clamp-4 text-sm text-gray-300">{item.scene}</p>
               <h2 className="font-bold mt-2 text-gray-300">Visuals:</h2>
@@ -100,9 +105,9 @@ function Topic({ onHandelInputChange }) {
         </div>}
 
       </div>
-      <Button className="mt-3" size="sm" disabled={loading} onClick={GenerateScript}>
+      {!scripts && <Button className="mt-3" size="sm" disabled={loading} onClick={GenerateScript}>
         {loading ? <Loader2Icon className="animate-spin" /> : <SparklesIcon className="mr-2" />}Generate Script
-      </Button>
+      </Button>}
     </div>
   );
 }

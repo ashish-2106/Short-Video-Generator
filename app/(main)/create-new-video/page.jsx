@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from "react"; // ✅ Added useState import
 import Topic from "./_components/Topic";
+import VideoStyle from "./_components/VideoStyle";
 
 function CreateNewVideo() {
   const [FormData, setFormData] = useState({}); // ✅ Initialized with an empty object
@@ -21,7 +22,7 @@ function CreateNewVideo() {
           {/* Topic & Script */}
           <Topic onHandelInputChange={onHandelInputChange} />
           {/* Video Image style */}
-
+          <VideoStyle onHandelInputChange={onHandelInputChange} />
           {/* Voice */}
 
           {/* Captions */}
