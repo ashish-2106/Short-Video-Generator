@@ -6,6 +6,7 @@ import Voice from "./_components/Voice";
 import Captions from "./_components/Captions";
 import { Button } from "@/components/ui/button";
 import { WandSparkles } from "lucide-react";
+import Preview from "./_components/Preview";
 
 function CreateNewVideo() {
   const [FormData, setFormData] = useState({}); // ✅ Initialized with an empty object
@@ -21,7 +22,7 @@ function CreateNewVideo() {
   return (
     <div>
       <h2 className="text-3xl">Create New Video</h2>
-      <div className="grid grid-cols-1 md:grid-cols-3 mt-8">
+      <div className="grid grid-cols-1 md:grid-cols-3 mt-8 gap-5">
         <div className="col-span-2 p-7 border rounded-xl h-[72vh] overflow-auto">
           {/* Topic & Script */}
           <Topic onHandelInputChange={onHandelInputChange} />
@@ -31,9 +32,11 @@ function CreateNewVideo() {
           <Voice onHandelInputChange={onHandelInputChange} />
           {/* Captions */}
           <Captions onHandelInputChange={onHandelInputChange} />
-          <Button className="w-full mt-5 cursor-pointer"><WandSparkles/> Generate video</Button>
+          <Button className="w-full mt-5 cursor-pointer"><WandSparkles /> Generate video</Button>
         </div>
-        <div></div>
+        <div>
+          <Preview FormData = {FormData} />
+        </div>
       </div>
     </div>
   );
