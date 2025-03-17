@@ -67,7 +67,7 @@ function Voice({ onHandelInputChange }) {
         {voiceOptions.map((voice, index) => (
           <div
             key={index}
-            className={`cursor-pointer p-3 dark:bg-slate-900 dark:border-white rounded-lg transition-all duration-200
+            className={`cursor-pointer p-3 ml-1 mr-1 dark:bg-slate-900 dark:border-white rounded-lg transition-all duration-200
               ${selectedVoice === voice.name ? 'ring-2 ring-white-500' : 'hover:ring-1 hover:ring-white-300'}
             `}
             onClick={() =>{ setSelectedVoice(voice.name);
