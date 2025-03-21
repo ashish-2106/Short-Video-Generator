@@ -49,6 +49,8 @@ function Topic({ onHandelInputChange }) {
     <div>
       <h2 className="mb-2">Project Title</h2>
       <Input
+       id="projectTitle"  // ✅ Added id
+       name="projectTitle"  // ✅ Added name
         placeholder="Enter Project title"
         onChange={(event) => onHandelInputChange("title", event.target.value)} // ✅ Fixed syntax
       />
@@ -67,10 +69,10 @@ function Topic({ onHandelInputChange }) {
                 <Button
                   variant="outline"
                   key={index}
-                  className={`m-1 ${suggestion === selectedTopic ? "bg-secondary" : ""}`}
+                  className={`m-1 ${suggestion == selectedTopic && 'bg-secondary'}`}
                   onClick={() => {
                     setSelectedTopic(suggestion);
-                    onHandelInputChange("Topic", suggestion);
+                    onHandelInputChange("topic", suggestion);
                   }}
                 >
                   {suggestion}
@@ -89,17 +91,16 @@ function Topic({ onHandelInputChange }) {
           </TabsContent>
         </Tabs>
         {scripts?.length > 0 && <div className="grid grid-cols-2 gap-5">
-          {scripts.slice(0, 2)?.map((item, index) => (
+          {scripts?.map((item, index) => (
             <div key={index} className={`p-3 border rounded-lg mt-3 cursor-pointer 
             ${selectedScriptIndex == index && 'border-white bg-secondary'}`}
-              onClick={() => setSelectedScriptIndex(index)}
+              onClick={() => {
+                setSelectedScriptIndex(index);
+                onHandelInputChange('script',item?.content);
+              }}
             >
-              <h2 className="font-bold text-gray-300">Scene:</h2>
-              <p className="line-clamp-4 text-sm text-gray-300">{item.scene}</p>
-              <h2 className="font-bold mt-2 text-gray-300">Visuals:</h2>
-              <p className="line-clamp-4 text-sm text-gray-300">{item.visual}</p>
-              <h2 className="font-bold mt-2 text-gray-300">Voiceover:</h2>
-              <p className="line-clamp-4 text-sm text-gray-300">{item.voiceover}</p>
+              <h2 className=" text-gray-300">{item.content}</h2>
+             
             </div>
           ))}
         </div>}

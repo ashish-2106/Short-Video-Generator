@@ -7,17 +7,38 @@ import Captions from "./_components/Captions";
 import { Button } from "@/components/ui/button";
 import { WandSparkles } from "lucide-react";
 import Preview from "./_components/Preview";
+import axios from "axios";
 
 function CreateNewVideo() {
-  const [FormData, setFormData] = useState({}); // ✅ Initialized with an empty object
+  const [formdata, setFormData] = useState({}); // ✅ Initialized with an empty object
 
   const onHandelInputChange = (fieldName, fieldValue) => {
     setFormData((prev) => ({
       ...prev,
       [fieldName]: fieldValue,
     }));
-    console.log(FormData);
-  };
+    console.log(formdata);
+  }
+
+  const GenerateVideo = async () => {
+    if (!formdata?.topic || !formdata?.script || !formdata?.videoStyle || !formdata?.caption || !formdata?.voice) {
+      console.error("Missing fields:", {
+        topic: formdata.topic,
+        script: formdata.script,
+        videoStyle: formdata.videoStyle,
+        caption: formdata.caption,
+        voice: formdata.voice
+      });
+      alert("Enter all the fields");
+      return;
+    }
+
+
+    const result = await axios.post('/api/generate-video-data', {
+      ...formdata
+    })
+    console.log(result);
+  }
 
   return (
     <div>
@@ -32,10 +53,11 @@ function CreateNewVideo() {
           <Voice onHandelInputChange={onHandelInputChange} />
           {/* Captions */}
           <Captions onHandelInputChange={onHandelInputChange} />
-          <Button className="w-full mt-5 cursor-pointer"><WandSparkles /> Generate video</Button>
+          <Button className="w-full mt-5 cursor-pointer"
+            onClick={GenerateVideo}><WandSparkles /> Generate video</Button>
         </div>
         <div>
-          <Preview FormData = {FormData} />
+          <Preview formdata={formdata} />
         </div>
       </div>
     </div>
