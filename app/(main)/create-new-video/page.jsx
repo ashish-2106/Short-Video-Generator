@@ -5,13 +5,18 @@ import VideoStyle from "./_components/VideoStyle";
 import Voice from "./_components/Voice";
 import Captions from "./_components/Captions";
 import { Button } from "@/components/ui/button";
-import { WandSparkles } from "lucide-react";
+import { Loader2Icon, WandSparkles } from "lucide-react";
 import Preview from "./_components/Preview";
 import axios from "axios";
+import { useMutation } from "convex/react";
+import { useAuthContext } from "@/app/provider";
+import { api } from "@/convex/_generated/api";
 
 function CreateNewVideo() {
   const [formdata, setFormData] = useState({}); // ✅ Initialized with an empty object
-
+  const CreateInitialVideoRecord = useMutation(api.videoData.createVideoData);
+  const { user } = useAuthContext();
+  const [loading, setloading] = useState(false);
   const onHandelInputChange = (fieldName, fieldValue) => {
     setFormData((prev) => ({
       ...prev,
@@ -32,12 +37,26 @@ function CreateNewVideo() {
       alert("Enter all the fields");
       return;
     }
+    setloading(true);
 
+    const resp = await CreateInitialVideoRecord({
+      topic: formdata.topic,
+      script: formdata.script,
+      title: formdata.title,
+      caption: formdata.caption,
+      videoStyle: formdata.videoStyle,
+      voice: formdata.voice,
+      uid: user?._id,
+      createdBy: user?.email,
+    });
+    console.log(resp);
 
     const result = await axios.post('/api/generate-video-data', {
       ...formdata
     })
     console.log(result);
+
+    setloading(false);
   }
 
   return (
@@ -54,7 +73,8 @@ function CreateNewVideo() {
           {/* Captions */}
           <Captions onHandelInputChange={onHandelInputChange} />
           <Button className="w-full mt-5 cursor-pointer"
-            onClick={GenerateVideo}><WandSparkles /> Generate video</Button>
+          disabled={loading}
+            onClick={GenerateVideo}>{loading?<Loader2Icon className="animate-spin"/>:<WandSparkles />} Generate video</Button>
         </div>
         <div>
           <Preview formdata={formdata} />

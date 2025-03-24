@@ -12,7 +12,8 @@ function Header() {
     const { user } = useAuthContext();
     const router = useRouter();
 
-    // Redirect to dashboard if user is authenticated
+    // Redirect to dash
+    // board if user is authenticated
     useEffect(() => {
         if (user) {
             router.push("/dashboard");

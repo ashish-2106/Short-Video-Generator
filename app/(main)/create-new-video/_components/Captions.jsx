@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 
 const options=[
     {
-        "name":"Youtuber",
+        "name":"Classic",
         "style":"text-yellow-500 text-3xl font-extrabold uppercase tracking-wide drop-shadow-md px-3 py-1 rounded-lg"
     },
     {
