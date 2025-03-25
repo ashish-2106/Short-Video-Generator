@@ -11,6 +11,7 @@ export const createVideoData = mutation({
         voice: v.string(),
         uid: v.id('users'),
         createdBy:v.string(),
+        credits:v.number()
     },
     handler:async(ctx,args)=>{
         const result = await ctx.db.insert('videoData',{
@@ -21,9 +22,31 @@ export const createVideoData = mutation({
             videoStyle: args.videoStyle,
             voice: args.voice,
             uid: args.uid,
-            createdBy: args.createdBy
+            createdBy: args.createdBy,
+            status: 'pending'
+        })
+        await ctx.db.patch(args.uid,{
+            credits:(args.credits)-1
         })
         return result;
     }
      
 })
+
+export const UpdateVideoRecord = mutation({
+    args: {
+        recordID: v.id('videoData'),
+        audioUrl: v.optional(v.string()),  // ✅ Ensure the field name matches the schema
+        images: v.optional(v.any()),
+        captionJson: v.optional(v.any()),
+    },
+    handler: async (ctx, args) => {
+        const result = await ctx.db.patch(args.recordID, {
+            audioUrl: args.audioUrl,  // ✅ Ensure correct field name
+            captionJson: args.captionJson,
+            images: args.images,
+            status: 'completed'
+        });
+        return result;
+    }
+});

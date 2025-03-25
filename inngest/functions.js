@@ -2,6 +2,8 @@ import axios from "axios";
 import { inngest } from "./client";
 import { createClient } from "@deepgram/sdk";
 import { GenerateImageScript } from "@/configs/AiModel";
+import { ConvexHttpClient } from "convex/browser";
+import { api } from "@/convex/_generated/api";
 
 const ImagePromptScript = `Generate Image prompt of {style} style with all the details for each scene for 30 seconds video:script:{script}
 -Just give specifing image prompt depends on the story line
@@ -26,46 +28,47 @@ export const GenerateVideoData = inngest.createFunction(
   { event: 'generate-video-data' },
   async ({ event, step }) => {
 
-    const { script, topic, title, caption, videostyle, voice } = event?.data;
+    const { script, topic, title, caption, videostyle, voice, recordID } = event?.data;
+    const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL)
     //Generate Audio File MP3
     const GenerateAudioFile = await step.run(
       "GenerateAudioFile",
       async () => {
-        // const result = await axios.post(BASE_URL + '/api/text-to-speech',
-        //   {
-        //     input: script,
-        //     voice: voice
-        //   },
-        //   {
-        //     headers: {
-        //       'x-api-key': process.env.NEXT_PUBLIC_AIGURULAB_API_KEY, // Your API Key
-        //       'Content-Type': 'application/json', // Content Type
-        //     },
-        //   })
-        // console.log(result.data.audio) //Output Result: Audio Mp3 Url
-        // return result.data.audio;
-        return "https://firebasestorage.googleapis.com/v0/b/projects-2025-71366.firebasestorage.app/o/audio%2F1742894175383.mp3?alt=media&token=eda928e2-a8af-4ed3-973c-4b6daeac67ee"
+        const result = await axios.post(BASE_URL + '/api/text-to-speech',
+          {
+            input: script,
+            voice: voice
+          },
+          {
+            headers: {
+              'x-api-key': process.env.NEXT_PUBLIC_AIGURULAB_API_KEY, // Your API Key
+              'Content-Type': 'application/json', // Content Type
+            },
+          })
+        console.log(result.data.audio) //Output Result: Audio Mp3 Url
+        return result.data.audio;
+        
       }
     )
 
     //Generate Captions
-    // const GenerateCaptions = await step.run(
-    //   "generateCaptions",
-    //   async () => {
-    //     const deepgram = createClient(process.env.NEXT_PUBLIC_DEEPGRAM_API_KEY);
-    //     //STEP 2: Call the transcribeUrl method with the audio payload and options
-    //     const { result, error } = await deepgram.listen.prerecorded.transcribeUrl(
-    //       {
-    //         url: GenerateAudioFile,
-    //       },
-    //       // STEP 3: Configure Deepgram options for audio analysis
-    //       {
-    //         model: "nova-3",
-    //       }
-    //     );
-    //     return result.results?.channels[0]?.alternatives[0]?.words;
-    //   }
-    // )
+    const GenerateCaptions = await step.run(
+      "generateCaptions",
+      async () => {
+        const deepgram = createClient(process.env.NEXT_PUBLIC_DEEPGRAM_API_KEY);
+        //STEP 2: Call the transcribeUrl method with the audio payload and options
+        const { result, error } = await deepgram.listen.prerecorded.transcribeUrl(
+          {
+            url: GenerateAudioFile,
+          },
+          // STEP 3: Configure Deepgram options for audio analysis
+          {
+            model: "nova-3",
+          }
+        );
+        return result.results?.channels[0]?.alternatives[0]?.words;
+      }
+    )
 
     //Generate ImagePrompt from Script
     const GenerateImagePrompt = await step.run(
@@ -95,12 +98,12 @@ export const GenerateVideoData = inngest.createFunction(
               },
               {
                 headers: {
-                  'x-api-key':process.env.NEXT_PUBLIC_AIGURULAB_API_KEY, // Your API Key
+                  'x-api-key': process.env.NEXT_PUBLIC_AIGURULAB_API_KEY, // Your API Key
                   'Content-Type': 'application/json', // Content Type
                 },
               })
-              console.log(result.data.image) //Output Result: Base 64 Image
-              return result.data.image;
+            console.log(result.data.image) //Output Result: Base 64 Image
+            return result.data.image;
           }
           )
         )
@@ -109,7 +112,18 @@ export const GenerateVideoData = inngest.createFunction(
 
     )
     //save All data to DB
-    return GenerateImages
-
+    const UpdateDB = await step.run(
+      "UpdateDB",
+      async () => {
+        const result = await convex.mutation(api.videoData.UpdateVideoRecord, {
+          recordID: recordID,
+          audioUrl: GenerateAudioFile,  // ✅ Use "audioUrl" (matching schema.js)
+          captionJson: GenerateCaptions,
+          images: GenerateImages 
+        });
+        return result;
+      }
+    );    
+    return "Executed Successfully !";
   }
 )

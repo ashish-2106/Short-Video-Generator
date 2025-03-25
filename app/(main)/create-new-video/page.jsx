@@ -48,11 +48,14 @@ function CreateNewVideo() {
       voice: formdata.voice,
       uid: user?._id,
       createdBy: user?.email,
+      credits:user?.credits
     });
     console.log(resp);
 
     const result = await axios.post('/api/generate-video-data', {
-      ...formdata
+      ...formdata,
+      recordID:resp
+     
     })
     console.log(result);
 
