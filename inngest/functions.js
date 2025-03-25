@@ -68,20 +68,48 @@ export const GenerateVideoData = inngest.createFunction(
     // )
 
     //Generate ImagePrompt from Script
-     const GenerateImagePrompt = await step.run(
+    const GenerateImagePrompt = await step.run(
       "generateImagePrompt",
-      async() =>{
-        const FINAL_PROMPT= ImagePromptScript.replace('{style}',videostyle).replace('{script}',script)
-        const result =await GenerateImageScript.sendMessage(FINAL_PROMPT)
-        const resp=JSON.parse(result.response.text());
+      async () => {
+        const FINAL_PROMPT = ImagePromptScript.replace('{style}', videostyle).replace('{script}', script)
+        const result = await GenerateImageScript.sendMessage(FINAL_PROMPT)
+        const resp = JSON.parse(result.response.text());
 
         return resp;
       }
-     )
+    )
     //Generate Images
+    const GenerateImages = await step.run(
+      "generateImages",
+      async () => {
+        let images = [];
+        images = await Promise.all(
+          GenerateImagePrompt.map(async (element) => {
+            const result = await axios.post(BASE_URL + '/api/generate-image',
+              {
+                width: 1024,
+                height: 1024,
+                input: element?.imagePrompt,
+                model: 'sdxl',//'flux'
+                aspectRatio: "1:1"//Applicable to Flux model only
+              },
+              {
+                headers: {
+                  'x-api-key':process.env.NEXT_PUBLIC_AIGURULAB_API_KEY, // Your API Key
+                  'Content-Type': 'application/json', // Content Type
+                },
+              })
+              console.log(result.data.image) //Output Result: Base 64 Image
+              return result.data.image;
+          }
+          )
+        )
+        return images;
+      }
 
+    )
     //save All data to DB
-    return GenerateImagePrompt
+    return GenerateImages
 
   }
 )
