@@ -13,15 +13,7 @@ const ImagePromptScript = `Generate Image prompt of {style} style with all the d
   imagePrompt:'',
   sceneContent:'<script Content>'
   }]`
-export const helloWorld = inngest.createFunction(
-  { id: "hello-world" },
-  { event: "test/hello.world" },
-  async ({ event, step }) => {
-    await step.sleep("wait-a-moment", "1s");
-    return { message: `Hello ${event.data.email}!` };
-  },
-);
-
+  
 const BASE_URL = 'https://aigurulab.tech';
 export const GenerateVideoData = inngest.createFunction(
   { id: 'generate-video-data' },
