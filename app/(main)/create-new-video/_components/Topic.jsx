@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Loader2Icon, SparklesIcon } from "lucide-react";
 import axios from "axios";
+import { useAuthContext } from "@/app/provider";
+import { toast, Toaster } from "react-hot-toast"; // ✅ Updated import
 
 const suggestions = [
   "Historic Story",
@@ -27,8 +29,20 @@ function Topic({ onHandelInputChange }) {
   const [selectedScriptIndex, setSelectedScriptIndex] = useState()
   const [scripts, setScripts] = useState();
   const [loading, setLoading] = useState(false);
+  const { user } = useAuthContext();
 
   const GenerateScript = async () => {
+    console.log("Checking credits:", user?.credits); // ✅ Debugging log
+    
+    if (!user) {
+      toast.error("User not found. Please log in."); // ✅ Handle missing user
+      return;
+    }
+
+    if (user.credits <= 0) {
+      toast.error("Insufficient credits! Please top up");
+      return;
+    }
     setLoading(true);
     setSelectedScriptIndex(null);
     try {
@@ -49,8 +63,8 @@ function Topic({ onHandelInputChange }) {
     <div>
       <h2 className="mb-2">Project Title</h2>
       <Input
-       id="projectTitle"  // ✅ Added id
-       name="projectTitle"  // ✅ Added name
+        id="projectTitle"  // ✅ Added id
+        name="projectTitle"  // ✅ Added name
         placeholder="Enter Project title"
         onChange={(event) => onHandelInputChange("title", event.target.value)} // ✅ Fixed syntax
       />
@@ -96,11 +110,11 @@ function Topic({ onHandelInputChange }) {
             ${selectedScriptIndex == index && 'border-white bg-secondary'}`}
               onClick={() => {
                 setSelectedScriptIndex(index);
-                onHandelInputChange('script',item?.content);
+                onHandelInputChange('script', item?.content);
               }}
             >
               <h2 className=" text-gray-300">{item.content}</h2>
-             
+
             </div>
           ))}
         </div>}

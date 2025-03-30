@@ -11,6 +11,8 @@ import axios from "axios";
 import { useMutation } from "convex/react";
 import { useAuthContext } from "@/app/provider";
 import { api } from "@/convex/_generated/api";
+import toast from "react-hot-toast";
+
 
 function CreateNewVideo() {
   const [formdata, setFormData] = useState({}); // ✅ Initialized with an empty object
@@ -26,6 +28,10 @@ function CreateNewVideo() {
   }
 
   const GenerateVideo = async () => {
+    if(user?.credits <= 0){
+      toast.error("Insufficient credits! Please top up")
+      return;
+    }
     if (!formdata?.topic || !formdata?.script || !formdata?.videoStyle || !formdata?.caption || !formdata?.voice) {
       console.error("Missing fields:", {
         topic: formdata.topic,

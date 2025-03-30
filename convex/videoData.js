@@ -65,3 +65,13 @@ export const GetUserVideos =query({
         return result;
     }
 })
+
+export const GetVideoDataByID = query({
+    args:{
+        videoID:v.id('videoData')
+    },
+    handler:async(ctx,args)=>{
+        const result = await ctx.db.get(args.videoID);
+        return result;
+    }
+})

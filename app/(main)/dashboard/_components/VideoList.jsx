@@ -22,7 +22,24 @@ function VideoList() {
             uid: user?._id
         })
         setVideoList(result);
-        console.log(result);
+        const isPendingVideo = result?.find((item) => item.status == 'pending');
+        isPendingVideo && GetPendingVideoStatus(isPendingVideo);
+    }
+    const GetPendingVideoStatus = (pendingVideo) => {
+        const intervalID = setInterval(async () => {
+            //Get Video Data by ID
+            const result = await convex.query(api.videoData.GetVideoById, {
+                videoId: pendingVideo?._id
+            })
+            if (result?.status == 'completed') {
+                clearInterval(intervalID);
+                console.log("video process completed")
+                GetUserVideoList();
+            }
+            console.log("video process pending")
+
+        }, 5000)
+
     }
     return (
         <div>
@@ -33,25 +50,25 @@ function VideoList() {
                     <Link href={'/create-new-video'}>
                         <Button className='cursor-pointer'>+ Create New Video</Button>
                     </Link>
-                </div> 
+                </div>
                 :
-                <div className='grid grid-cols-2 xl:grid-cols-5 lg:grid-cols-3 gap-5 mt-10'> 
+                <div className='grid grid-cols-2 xl:grid-cols-5 lg:grid-cols-3 gap-5 mt-10'>
                     {videoList.map((video, index) => (
                         <div key={index} className='relative'>
                             {/* <Image src={video?.images[0]} alt={video?.title} width={60} height={60} /> */}
-                           {video?.status == "completed" ? <img src={video.images[0]} width="500" height="500" alt={video?.title}
-                             className='w-full object-cover rounded-xl aspect-[2/3]' />
-                            :
-                            <div className='aspect-[2/3] w-full h-full flex items-center justify-center bg-slate-900 rounded-xl gap-2'>
-                               <RefreshCcw className='animate-spin'/>
-                                <h2>Generating...</h2>
-                            </div>
+                            {video?.status == "completed" ? <img src={video.images[0]} width="500" height="500" alt={video?.title}
+                                className='w-full object-cover rounded-xl aspect-[2/3]' />
+                                :
+                                <div className='aspect-[2/3] w-full h-full flex items-center justify-center bg-slate-900 rounded-xl gap-2'>
+                                    <RefreshCcw className='animate-spin' />
+                                    <h2>Generating...</h2>
+                                </div>
                             }
 
-                             <div className='absolute bottom-3 px-5 w-full'>
+                            <div className='absolute bottom-3 px-5 w-full'>
                                 <h2>{video?.title}</h2>
                                 <h2 className='text-sm'>{moment(video?._creationTime).fromNow()}</h2>
-                             </div>
+                            </div>
                         </div>
                     ))}
                 </div>
