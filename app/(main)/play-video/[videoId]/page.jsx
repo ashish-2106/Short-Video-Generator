@@ -3,26 +3,25 @@ import React, { useEffect, useState } from 'react'
 import Remotionplayer from '../_components/Remotionplayer'
 import VideoInfo from '../_components/VideoInfo'
 import { useParams } from 'next/navigation';
-import { useConvex } from 'convex/react';
+import { useConvex, useQuery } from 'convex/react';
 import { api } from '@/convex/_generated/api';
 
 function playVideo() {
-    const { videoID } = useParams();
+    const { videoId } = useParams();
     const convex = useConvex();
-    const [videoData,setVideoData] = useState();
-    
-    useEffect(()=>{
-        videoID && GetVideoDataByID();
-    },[videoID])
+    const [videoData, setVideoData] = useState(null);
+
+    useEffect(() => {
+        videoId && GetVideoDataByID(); 
+    }, [videoId]);
 
     const GetVideoDataByID = async () => {
-        const result = await convex.query(api.convex.GetVideoDataByID, {
-            videoID : videoID
-        })
-        console.log(result);
+        const result = await convex.query(api.videoData.GetVideoById, {
+            videoId: videoId,
+        });
+        console.log("Fetched Video Data:", result);
         setVideoData(result);
-        
-    }
+    };
 
 
     return (
@@ -34,7 +33,7 @@ function playVideo() {
             </div>
             <div>
                 {/* Video Information */}
-                <VideoInfo />
+                <VideoInfo videoData ={videoData}/>
 
             </div>
         </div>

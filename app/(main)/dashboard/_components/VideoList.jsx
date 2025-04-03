@@ -28,7 +28,7 @@ function VideoList() {
     const GetPendingVideoStatus = (pendingVideo) => {
         const intervalID = setInterval(async () => {
             //Get Video Data by ID
-            const result = await convex.query(api.videoData.GetVideoById, {
+            const result = await convex.query(api.videoData.GetVideoById , {
                 videoId: pendingVideo?._id
             })
             if (result?.status == 'completed') {
@@ -66,7 +66,7 @@ function VideoList() {
                                     </div>
                                 }
 
-                                <div className='absolute bottom-3 px-5 w-full'>
+                                <div className='absolute bottom-3 px-5 w-full '>
                                     <h2>{video?.title}</h2>
                                     <h2 className='text-sm'>{moment(video?._creationTime).fromNow()}</h2>
                                 </div>

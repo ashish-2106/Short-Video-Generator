@@ -12,6 +12,7 @@ import { useMutation } from "convex/react";
 import { useAuthContext } from "@/app/provider";
 import { api } from "@/convex/_generated/api";
 import toast from "react-hot-toast";
+import Link from "next/link";
 
 
 function CreateNewVideo() {
@@ -28,7 +29,7 @@ function CreateNewVideo() {
   }
 
   const GenerateVideo = async () => {
-    if(user?.credits <= 0){
+    if (user?.credits <= 0) {
       toast.error("Insufficient credits! Please top up")
       return;
     }
@@ -54,14 +55,14 @@ function CreateNewVideo() {
       voice: formdata.voice,
       uid: user?._id,
       createdBy: user?.email,
-      credits:user?.credits
+      credits: user?.credits
     });
     console.log(resp);
 
     const result = await axios.post('/api/generate-video-data', {
       ...formdata,
-      recordID:resp
-     
+      recordID: resp
+
     })
     console.log(result);
 
@@ -81,9 +82,11 @@ function CreateNewVideo() {
           <Voice onHandelInputChange={onHandelInputChange} />
           {/* Captions */}
           <Captions onHandelInputChange={onHandelInputChange} />
-          <Button className="w-full mt-5 cursor-pointer"
-          disabled={loading}
-            onClick={GenerateVideo}>{loading?<Loader2Icon className="animate-spin"/>:<WandSparkles />} Generate video</Button>
+          <Link href={'/dashboard'}>
+            <Button className="w-full mt-5 cursor-pointer"
+              disabled={loading}
+              onClick={GenerateVideo}>{loading ? <Loader2Icon className="animate-spin" /> : <WandSparkles />} Generate video</Button>
+          </Link>
         </div>
         <div>
           <Preview formdata={formdata} />

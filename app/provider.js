@@ -42,7 +42,7 @@ function Provider({ children }) {
                 enableSystem
                 disableTransitionOnChange
             >
-                {console.log("Rendering children in Provider:", children)}
+                
                 {children ? children : <p>⚠ No children provided ⚠</p>} {/* Debug */}
             </NextThemesProvider>
         </AuthContext.Provider>
