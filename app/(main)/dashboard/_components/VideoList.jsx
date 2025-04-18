@@ -1,6 +1,7 @@
 "use client"
 import { useAuthContext } from '@/app/provider';
 import { Button } from '@/components/ui/button';
+import { auth } from '@/configs/FirebaseConfig';
 import { api } from '@/convex/_generated/api';
 import { useConvex } from 'convex/react';
 import { RefreshCcw, Video } from 'lucide-react';
@@ -28,7 +29,7 @@ function VideoList() {
     const GetPendingVideoStatus = (pendingVideo) => {
         const intervalID = setInterval(async () => {
             //Get Video Data by ID
-            const result = await convex.query(api.videoData.GetVideoById , {
+            const result = await convex.query(api.videoData.GetVideoById, {
                 videoId: pendingVideo?._id
             })
             if (result?.status == 'completed') {
@@ -41,11 +42,15 @@ function VideoList() {
         }, 5000)
 
     }
+
+
     return (
+
         <div>
             {videoList.length == 0 ?
                 <div className='flex flex-col items-center justify-center mt-28 gap-5 p-5 border border-dashed rounded-xl py-16'>
                     <Image src={'/logo.svg'} alt='logo' width={60} height={60} />
+                    <h1 className="text-4xl font-semibold bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 text-transparent bg-clip-text"> Hello {user?.name}</h1>
                     <h2 className='text-gray-400 text-lg'>You haven't created any videos yet. Create a new one</h2>
                     <Link href={'/create-new-video'}>
                         <Button className='cursor-pointer'>+ Create New Video</Button>
@@ -54,7 +59,7 @@ function VideoList() {
                 :
                 <div className='grid grid-cols-2 xl:grid-cols-5 lg:grid-cols-3 gap-5 mt-10'>
                     {videoList.map((video, index) => (
-                        <Link key={index} href={'/play-video/'+video?._id} >
+                        <Link key={index} href={'/play-video/' + video?._id} >
                             <div className='relative'>
                                 {/* <Image src={video?.images[0]} alt={video?.title} width={60} height={60} /> */}
                                 {video?.status == "completed" ? <img src={video.images[0]} width="500" height="500" alt={video?.title}
