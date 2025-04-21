@@ -88,7 +88,10 @@ function AppSideBar() {
                         <Gem className="text-gray-400"/>
                         <h2 className="text-gray-400">{user?.credits} credits Left</h2>
                     </div>
+                    <Link href={'/billing'}>
                     <Button className='w-full mt-5'>Buy More Credits</Button>
+                    </Link>
+                    
                     </div>
                 </SidebarFooter>
             

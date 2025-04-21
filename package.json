@@ -11,6 +11,7 @@
   "dependencies": {
     "@deepgram/sdk": "^3.11.2",
     "@google/generative-ai": "^0.24.0",
+    "@paypal/react-paypal-js": "^8.8.3",
     "@radix-ui/react-dialog": "^1.1.6",
     "@radix-ui/react-scroll-area": "^1.2.3",
     "@radix-ui/react-separator": "^1.1.2",

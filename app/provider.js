@@ -10,6 +10,7 @@ import { api } from '@/convex/_generated/api';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from '@/configs/FirebaseConfig';
 import { AuthContext } from './_context/AuthContext';
+import { PayPalScriptProvider } from '@paypal/react-paypal-js';
 
 
 
@@ -35,7 +36,8 @@ function Provider({ children }) {
     }, []);
 
     return (
-        <AuthContext.Provider value={{ user }}>
+        <AuthContext.Provider value={{ user, setUser }}>
+             <PayPalScriptProvider options={{ clientId: process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID }}>
             <NextThemesProvider
                 attribute="class"
                 defaultTheme="dark"
@@ -45,6 +47,7 @@ function Provider({ children }) {
                 
                 {children ? children : <p>⚠ No children provided ⚠</p>} {/* Debug */}
             </NextThemesProvider>
+            </PayPalScriptProvider>
         </AuthContext.Provider>
     );
     

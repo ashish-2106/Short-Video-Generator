@@ -50,7 +50,7 @@ function VideoList() {
             {videoList.length == 0 ?
                 <div className='flex flex-col items-center justify-center mt-28 gap-5 p-5 border border-dashed rounded-xl py-16'>
                     <Image src={'/logo.svg'} alt='logo' width={60} height={60} />
-                    <h1 className="text-4xl font-semibold bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 text-transparent bg-clip-text"> Hello {user?.name}</h1>
+                    <h1 className="text-4xl font-semibold bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 text-transparent bg-clip-text"> Hello, {user?.name}</h1>
                     <h2 className='text-gray-400 text-lg'>You haven't created any videos yet. Create a new one</h2>
                     <Link href={'/create-new-video'}>
                         <Button className='cursor-pointer'>+ Create New Video</Button>
