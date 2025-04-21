@@ -56,10 +56,10 @@ function Billing() {
           </div>
           <h2 className='font-bold text-3xl'>{user?.credits}</h2>
         </div>
-      <p className='text-sm p-5 text-gray-500 max-w-2xl '>
+        <p className='text-sm p-5 text-gray-500 max-w-2xl '>
           When your credit balance reaches $0, your video generation will stop working. Please top up your credits.
         </p>
-        
+
         <div className='mt-5'>
           <h2 className='font-bold text-2xl'>Buy More Credits</h2>
           <div>
@@ -69,22 +69,29 @@ function Billing() {
                   <CircleDollarSign /> <strong>{plan?.credits}</strong>Credits</h2>
                 <div className='flex gap-2 items-center'>
                   <h2 className='font-medium text-xl'>{plan?.cost}$</h2>
-                  <PayPalButtons style={{ layout: "horizontal" }}
-                    onApprove={() => onPaymentSuccess(plan?.cost, plan?.credits)}
-                    onCancel={() => toast.error("Payment Cancelled")}
-                    createOrder={(data, actions) => {
-                      return actions?.order?.create({
-                        purchase_units: [
-                          {
-                            amount: {
-                              value: plan?.cost,
-                              currency_code: "USD",
-                            },
-                          },
-                        ],
-                      });
+                  <div className="rounded-full overflow-hidden bg-yellow-400">
+                    <PayPalButtons style={{
+                      layout: "horizontal",
+                     
+                      
                     }}
-                  />
+
+                      onApprove={() => onPaymentSuccess(plan?.cost, plan?.credits)}
+                      onCancel={() => toast.error("Payment Cancelled")}
+                      createOrder={(data, actions) => {
+                        return actions?.order?.create({
+                          purchase_units: [
+                            {
+                              amount: {
+                                value: plan?.cost,
+                                currency_code: "USD",
+                              },
+                            },
+                          ],
+                        });
+                      }}
+                    />
+                  </div>
                 </div>
               </div>
             ))}

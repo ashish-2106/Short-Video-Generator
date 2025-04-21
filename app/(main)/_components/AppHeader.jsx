@@ -3,28 +3,51 @@
 import { useAuthContext } from "@/app/provider";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import Image from "next/image";
-import React from "react";
+import React, { useState } from "react";
 
 function AppHeader() {
-    const { user } = useAuthContext();
+    const { user, signOut } = useAuthContext();
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+    const handleSignOut = () => {
+        signOut();
+        setIsMenuOpen(false);
+    };
 
     return (
         <div className="flex justify-between items-center p-3">
             <SidebarTrigger />
-            {user?.pictureURL ? (
-                <Image
-                    src={user.pictureURL}
-                    alt="user"
-                    width={40}
-                    height={40}
-                    className="rounded-full"
-                />
-            ) : (
-                <div className="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center">
-                    {/* Default avatar (optional) */}
-                    <span className="text-gray-600">?</span>
-                </div>
-            )}
+            <div className="relative">
+                {user?.pictureURL ? (
+                    <Image
+                        src={user.pictureURL}
+                        alt="user"
+                        width={40}
+                        height={40}
+                        className="rounded-full cursor-pointer"
+                        onClick={() => setIsMenuOpen((prev) => !prev)}
+                    />
+                ) : (
+                    <div
+                        className="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center cursor-pointer"
+                        onClick={() => setIsMenuOpen((prev) => !prev)}
+                    >
+                        {/* Default avatar (optional) */}
+                        <span className="text-gray-600">?</span>
+                    </div>
+                )}
+
+                {isMenuOpen && (
+                    <div className="absolute right-0 mt-2 bg-white border rounded shadow-lg w-32">
+                        <button
+                            className="w-full py-2 text-left px-4 text-gray-700 hover:bg-gray-200"
+                            onClick={handleSignOut}
+                        >
+                            Logout
+                        </button>
+                    </div>
+                )}
+            </div>
         </div>
     );
 }
