@@ -5,7 +5,7 @@ import { Github, Instagram, Linkedin, Twitter } from 'lucide-react'
 
 function Hero() {
   return (
-    <div className='mt-10 p-4 mt-35 flex-col justify-center items-center text-center '>
+    <div className=' p-4 mt-35 flex-col justify-center items-center text-center '>
       <h2 className='font-bold text-6xl'>AI Short video generator</h2>
       <p className='mt-4 text-2xl tet-center text-gray-500'>🤖 AI generates scripts, images, and voiceovers in seconds. <br />
       ⚡ Create, edit, and publish engaging shorts with ease!</p>
